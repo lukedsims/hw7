@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIEI-451: Week 7 Homework Instructions</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" type="text/css">
+</head>
+
+<body class="p-8 line-numbers">
+  <div class="container mx-auto space-y-4">
+    <h1 class="text-4xl">Week 7 Homework</h1>
+    <p>In this exercise, you will pick up where the last homework left off – your application will reach out to TMDB to get a list of movies and allow a user to create maintain which movies have been watched – with the addition of user login and a per-user "watch list".</p>
+
+    <p>A possible solution for last week's homework has been provided as a starting point. <em>Note: it's the basic solution without the ability to "un-watch" a movie.</em> Your goal is to take it from there, adding user registration/sign-in and using the currently signed-in user to determine which movies have been watched.</p>
+
+    <h2 class="text-2xl">Things to Know</h2>
+
+    <ul class="list-inside list-disc">
+      <li>The <span class="bg-orange-100 text-red-400 font-mono p-1">movies.html</span> file includes all the necessary scripts and links for talking to the Firebase API; the only thing missing is your app-specific Firebase configuration – copy that from your personal Firebase account.</li>
+      <li>The code to call the TMDB API is provided, but you'll need to provide your own TMDB API key in <span class="bg-orange-100 text-red-400 font-mono p-1">movies.js</span>.</li>
+      <li>Do your work in <span class="bg-orange-100 text-red-400 font-mono p-1">movies.js</span>, but don't be afraid to start over when you get stuck! Starting over is often the best way to clear your mind. You can refer to <span class="bg-orange-100 text-red-400 font-mono p-1">movies-start.js</span> if you want to start from scratch.</li>
+    </ul>
+
+    <h2 class="text-2xl">Requirements and Rubric</h2>
+
+    <p>(These are high-level requirements for grading; more detailed mechanics are included in the comments of <span class="bg-orange-100 text-red-400 font-mono p-1">movies.js</span>)</p>
+
+    <ul class="list-inside list-disc">
+      <li>Create a new brand-new repository in your GitHub account called <span class="bg-orange-100 text-red-400 font-mono p-1">hw7</span>. Clone and open the code in VSCode. Add an HTML page and corresponding JS file – you can use the provided <span class="bg-orange-100 text-red-400 font-mono p-1">movies.html</span> and <span class="bg-orange-100 text-red-400 font-mono p-1">movies.js</span> as a starting point.</li>
+      <li>(2 points) Implement a login flow – when the user is signed-out, display a sign-in interface.</li>
+      <li>(4 points) When the user is signed-in, display the user's name and a link to sign-out. Ensure that a users collection is present in your database and a document is present for each user who signs-in to your application.</li>
+      <li>(4 points) Ensure the "watch list" is user-specific, i.e. a separate one is maintained for each user who signs-in to your application.</li>
+    </ul>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KIEI-451: Firebase Authentication</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" type="text/css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/themes/prism.min.css" rel="stylesheet"
+    type="text/css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/plugins/line-numbers/prism-line-numbers.min.css"
+    rel="stylesheet" type="text/css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/prism.min.js"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.22.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+</head>
+
+<body class="p-8 line-numbers">
+  <div class="container mx-auto">
+    <h1 class="text-4xl">Securing Your Application With Firebase Authentication</h1>
+    <div class="mt-4 space-y-4">
+      <p>We're now familar with Firebase and know that it contains a variety of services – e.g. Cloud Firestore – now we'll have a look into Authentication.</p>
+
+      <p>The goal of Firebase Authentication is to allow us (developers) the ability to add user login to our JavaScript web applications.</p>
+
+      <h3 class="font-bold text-xl">Using Firebase Authentication and FirebaseUI in a Web Application</h3>
+      
+      <p>We're going to be using two separate libraries that are available from Firebase – one to add the back-end Authentication service, and another helper library called FirebaseUI that will help us to add a user interface around the Authentication service. This is easily done by adding these <span class="bg-orange-100 text-red-400 font-mono p-1">script</span> tags to our HTML:</p>
+
+      <pre class="m-0 p-0">
+        <code class="language-html">&lt;!-- The Firebase Authentication module --&gt;
+        &lt;script src=&quot;https://www.gstatic.com/firebasejs/8.2.7/firebase-auth.js&quot;&gt;&lt;/script&gt;
+        &lt;!-- FirebaseUI Auth --&gt;
+        &lt;script src=&quot;https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.js&quot;&gt;&lt;/script&gt;</code>
+      </pre>
+
+      <p>We're also going to add a CSS file for FirebaseUI:</p>
+
+      <pre class="m-0 p-0">
+        <code class="language-html">&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;https://www.gstatic.com/firebasejs/ui/4.7.3/firebase-ui-auth.css&quot; /&gt;</code>
+      </pre>
+
+      <p><em>To be clear, we don't need FirebaseUI – we can build code around Firebase Authentication to fully customize the login interface and flow – but are using it for the sake of simplicity.</em></p>
+      
+      <p>Now, we're ready to add a user login flow and user interface to our application. Adding these scripts to our application does two things:</p>
+
+      <ol class="list-inside list-decimal">
+        <li>Through FirebaseUI, gives us a login form we can use to ask users to login or register</li>
+        <li>Through Firebase Authentication, gives us a few methods to ask for things like the currently logged-in user.</li>
+      </ol>
+
+      <p>Let's examine how we might add a simple login page to our application. To enable the Firebase UI for auth, we can simply add this code to run when our page loads:</p>
+      
+      <pre class="m-0 p-0">
+        <code class="language-js">// Initializes FirebaseUI Auth
+        let ui = new firebaseui.auth.AuthUI(firebase.auth())
+
+        // FirebaseUI configuration
+        let authUIConfig = {
+          signInOptions: [
+            firebase.auth.EmailAuthProvider.PROVIDER_ID
+          ],
+          signInSuccessUrl: 'todo.html'
+        }
+
+        // Starts FirebaseUI Auth
+        ui.start('.firebaseui-auth-container', authUIConfig)</code>
+      </pre>
+
+      <p>This initializes Firebase UI Auth, provides a configuration object, and places the login form in a spot on the page of our choosing – in this example, we're using an empty <span class="bg-orange-100 text-red-400 font-mono p-1">div</span> on our page with the class name <span class="bg-orange-100 text-red-400 font-mono p-1">firebaseui-auth-container</span>. This adds a login UI and allows a user to login to an existing user account or create a new user account. The <span class="bg-orange-100 text-red-400 font-mono p-1">signInOptions</span> in the FirebaseUI configuration should mirror the allowed sign-in methods in our Firebase console. In this case, we're able to use <span class="bg-orange-100 text-red-400 font-mono p-1">firebase.auth.EmailAuthProvider.PROVIDER_ID</span> because we've got the "Email/Password" sign-in provider turned on in our Firebase backend, as shown below.</p>
+
+      <p><img src="../images/email-enabled.png"></p>
+
+      <p>If we turn the "Google" sign-in provider on, because we want to use Google sign-in as an option in our application, we also have to modify the <span class="bg-orange-100 text-red-400 font-mono p-1">signInOptions</span> Array to make it work, i.e.</p>
+
+      <pre class="m-0 p-0">
+        <code class="language-js">// Initializes FirebaseUI Auth
+        let ui = new firebaseui.auth.AuthUI(firebase.auth())
+
+        // FirebaseUI configuration
+        let authUIConfig = {
+          signInOptions: [
+            firebase.auth.EmailAuthProvider.PROVIDER_ID
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+          ],
+          signInSuccessUrl: 'todo.html'
+        }
+
+        // Starts FirebaseUI Auth
+        ui.start('.firebaseui-auth-container', authUIConfig)</code>
+      </pre>
+
+      <h3 class="font-bold text-xl">We've Signed-In... Now What?</h3>
+      <p>Now that we've used FirebaseUI to complete our login flow – that is, either we sign-in to an existing user account or created a new user account, we now have access to the <span class="bg-orange-100 text-red-400 font-mono p-1">firebase.auth()</span> Object. This Object gives us a few interesting pieces of functionality and information:</p>
+
+      <table class="w-full text-left table-collapse my-4">
+        <tr>
+          <td class="w-1/3 text-red-400 bg-orange-100 font-mono p-4">
+            firebase.auth().currentUser
+          </td>
+          <td class="p-4">An Object which contains information on the currently logged-in user, such as name, email address, and user ID (<span class="bg-orange-100 text-red-400 font-mono p-1">uid</span>). Returns <span class="bg-orange-100 text-red-400 font-mono p-1">null</span> if there is no currently signed-in user.</td>
+        </tr>
+        <tr>
+          <td class="w-1/3 text-red-400 bg-orange-100 font-mono p-4">
+            firebase.auth().signOut()
+          </td>
+          <td class="p-4">If a user is signed-in, sign out and sets the <span class="bg-orange-100 text-red-400 font-mono p-1">currentUser</span> to <span class="bg-orange-100 text-red-400 font-mono p-1">null</span>.</td>
+        </tr>
+        <tr>
+          <td class="w-1/3 text-red-400 bg-orange-100 font-mono p-4">
+            firebase.auth().onAuthStateChanged(function (user) { ... })
+          </td>
+          <td class="p-4">An event listener that waits for a change in user sign-in. Accepts a function as a parameters that describes what to do when that happens.</td>
+        </tr>
+      </table>
+
+      <p>Generally speaking, we should subscribe to the <span class="bg-orange-100 text-red-400 font-mono p-1">firebase.auth().onAuthStateChanged</span> listener as the first thing on any page that requires authentication. All of our subsequent functionality should reside within that listener.</p>
+    </div>
+  </div>
+</body>
+
+</html>
